@@ -1,19 +1,15 @@
+// Form.js
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../state/action-creators';
 
 function Form(props) {
   const onChange = (evt) => {
-    props.inputChange(evt.target.id, evt.target.value);
+    // Implement your onChange logic here
   };
 
   const onSubmit = (evt) => {
-    evt.preventDefault();
-    props.postQuiz({
-      question_text: props.form.newQuestion,
-      true_answer_text: props.form.newTrueAnswer,
-      false_answer_text: props.form.newFalseAnswer,
-    });
+    // Implement your onSubmit logic here
   };
 
   return (
@@ -27,4 +23,4 @@ function Form(props) {
   );
 }
 
-export default connect((state) => ({ form: state.form }), actionCreators)(Form);
+export default connect((state) => state, actionCreators)(Form);
