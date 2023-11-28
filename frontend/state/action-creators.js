@@ -13,94 +13,58 @@ export function inputChange() { }
 
 export function resetForm() { }
 
-// ❗ Async action creators
-// Async action creators
+import axios from 'axios';
 
 export function fetchQuiz() {
-  return function (dispatch) {
-    // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
-    dispatch(setMessage("Loading next quiz..."));
+  return async function (dispatch) {
+    // Dispatch an action to reset the quiz state
+    dispatch({ type: 'RESET_QUIZ_STATE' });
 
-    // Fetch the next quiz from the server
-    fetch("http://localhost:9000/api/quiz/next")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch quiz");
-        }
-        return response.json();
-      })
-      .then((quiz) => {
-        // On successful GET, dispatch an action to send the obtained quiz to its state
-        dispatch(setQuiz(quiz));
-      })
-      .catch((error) => {
-        // On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
-        console.error("Error fetching quiz:", error);
-        dispatch(setMessage("Error loading quiz"));
-      });
+    try {
+      // Make a GET request to fetch the next quiz
+      const response = await axios.get('http://localhost:9000/api/quiz/next');
+
+      // Dispatch an action to send the obtained quiz to its state
+      dispatch({ type: 'FETCH_QUIZ_SUCCESS', payload: response.data });
+    } catch (error) {
+      // On error, dispatch an action to handle the error
+      dispatch({ type: 'FETCH_QUIZ_ERROR', payload: error.message });
+    }
   };
 }
 
-export function postAnswer(answer) {
-  return function (dispatch) {
-    // On successful POST:
-    // - Dispatch an action to reset the selected answer state
-    // - Dispatch an action to set the server message to state
-    // - Dispatch the fetching of the next quiz
-    fetch("http://localhost:9000/api/quiz/answer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(answer),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to post answer");
-        }
-        return response.json();
-      })
-      .then((feedback) => {
-        // On successful POST, dispatch actions accordingly
-        dispatch(resetForm());
-        dispatch(setMessage(feedback.message));
-        dispatch(fetchQuiz());
-      })
-      .catch((error) => {
-        // On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
-        console.error("Error posting answer:", error);
-        dispatch(setMessage("Error posting answer"));
-      });
+export function postAnswer(answerData) {
+  return async function (dispatch) {
+    try {
+      // Make a POST request to submit the answer
+      await axios.post('http://localhost:9000/api/quiz/answer', answerData);
+
+      // Dispatch actions for a successful POST
+      dispatch({ type: 'RESET_SELECTED_ANSWER_STATE' });
+      dispatch({ type: 'SET_SERVER_MESSAGE', payload: 'Answer submitted successfully' });
+
+      // Dispatch the fetching of the next quiz
+      dispatch(fetchQuiz());
+    } catch (error) {
+      // On error, dispatch an action to handle the error
+      dispatch({ type: 'POST_ANSWER_ERROR', payload: error.message });
+    }
   };
 }
 
-export function postQuiz(formData) {
-  return function (dispatch) {
-    // On successful POST:
-    // - Dispatch the correct message to the appropriate state
-    // - Dispatch the resetting of the form
-    fetch("http://localhost:9000/api/quiz/new", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to post new quiz");
-        }
-        return response.json();
-      })
-      .then((newQuiz) => {
-        // On successful POST, dispatch actions accordingly
-        dispatch(setMessage("Quiz created successfully"));
-        dispatch(resetForm());
-      })
-      .catch((error) => {
-        // On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
-        console.error("Error posting new quiz:", error);
-        dispatch(setMessage("Error posting new quiz"));
-      });
+export function postQuiz(quizData) {
+  return async function (dispatch) {
+    try {
+      // Make a POST request to create a new quiz
+      await axios.post('http://localhost:9000/api/quiz/new', quizData);
+
+      // Dispatch actions for a successful POST
+      dispatch({ type: 'SET_CORRECT_MESSAGE', payload: 'Quiz created successfully' });
+      dispatch({ type: 'RESET_FORM_STATE' });
+    } catch (error) {
+      // On error, dispatch an action to handle the error
+      dispatch({ type: 'POST_QUIZ_ERROR', payload: error.message });
+    }
   };
 }
+
