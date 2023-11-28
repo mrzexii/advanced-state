@@ -1,23 +1,38 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as actionCreators from '../state/action-creators';
+import * as actionCreators from 'your-action-creator-path'; // Replace with the actual path
 
 function Quiz(props) {
   return (
     <div id="wrapper">
-      {props.quiz ? (
-        <>
-          <h2>{props.quiz.question_text}</h2>
-          <div id="quizAnswers">
-            {/* ... (map through answers and render JSX accordingly) */}
-          </div>
-          <button id="submitAnswerBtn" onClick={props.postAnswer}>
-            Submit answer
-          </button>
-        </>
-      ) : 'Loading next quiz...'}
+      {
+        // quiz already in state? Let's use that, otherwise render "Loading next quiz..."
+        true ? (
+          <>
+            <h2>What is a closure?</h2>
+
+            <div id="quizAnswers">
+              <div className="answer selected">
+                A function
+                <button>
+                  SELECTED
+                </button>
+              </div>
+
+              <div className="answer">
+                An elephant
+                <button>
+                  Select
+                </button>
+              </div>
+            </div>
+
+            <button id="submitAnswerBtn">Submit answer</button>
+          </>
+        ) : 'Loading next quiz...'
+      }
     </div>
   );
 }
 
-export default connect((state) => ({ quiz: state.quiz }), actionCreators)(Quiz);
+export default connect(state => state, actionCreators)(Quiz);
