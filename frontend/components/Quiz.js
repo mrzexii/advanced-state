@@ -1,29 +1,26 @@
+// Quiz.js
 import React from 'react';
 import { connect } from 'react-redux';
-import * as actionCreators from 'your-action-creator-path'; // Replace with the actual path
+import * as actionCreators from '../state/action-creators';
 
 function Quiz(props) {
   return (
     <div id="wrapper">
       {
         // quiz already in state? Let's use that, otherwise render "Loading next quiz..."
-        true ? (
+        props.quiz ? (
           <>
-            <h2>What is a closure?</h2>
+            <h2>{props.quiz.question_text}</h2>
 
             <div id="quizAnswers">
               <div className="answer selected">
-                A function
-                <button>
-                  SELECTED
-                </button>
+                {props.quiz.true_answer_text}
+                <button>SELECTED</button>
               </div>
 
               <div className="answer">
-                An elephant
-                <button>
-                  Select
-                </button>
+                {props.quiz.false_answer_text}
+                <button>Select</button>
               </div>
             </div>
 
@@ -35,4 +32,5 @@ function Quiz(props) {
   );
 }
 
-export default connect(state => state, actionCreators)(Quiz);
+export default connect((state) => state, actionCreators)(Quiz);
+
