@@ -1,8 +1,8 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from 'react'
+import { connect } from 'react-redux'
 
 function Message(props) {
-  return <div id="message">{props.infoMessage}</div>;
+  return <div id="message">Nice job!</div>
 }
 
-export default connect((state) => ({ infoMessage: state.infoMessage }))(Message);
+export default connect(st => st, actionCreators)(Message)
