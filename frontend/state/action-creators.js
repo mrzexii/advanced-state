@@ -1,17 +1,9 @@
 // action-creators.js
 import axios from 'axios';
 
-// Synchronous action creators
-export const moveClockwise = () => ({ type: 'MOVE_CLOCKWISE' });
-export const moveCounterClockwise = () => ({ type: 'MOVE_COUNTERCLOCKWISE' });
-export const setQuizIntoState = (quiz) => ({ type: 'SET_QUIZ_INTO_STATE', payload: quiz });
-export const setSelectedAnswer = (answer) => ({ type: 'SET_SELECTED_ANSWER', payload: answer });
-export const setInfoMessage = (message) => ({ type: 'SET_INFO_MESSAGE', payload: message });
-export const inputChange = (value) => ({ type: 'INPUT_CHANGE', payload: value });
-export const resetForm = () => ({ type: 'RESET_FORM' });
+// ... (existing action creators)
 
-// Asynchronous action creators
-export const fetchQuiz = () => {
+export function fetchQuiz() {
   return async function (dispatch) {
     dispatch({ type: 'RESET_QUIZ_STATE' });
 
@@ -22,9 +14,9 @@ export const fetchQuiz = () => {
       dispatch({ type: 'FETCH_QUIZ_ERROR', payload: error.message });
     }
   };
-};
+}
 
-export const postAnswer = (answerData) => {
+export function postAnswer(answerData) {
   return async function (dispatch) {
     try {
       await axios.post('http://localhost:9000/api/quiz/answer', answerData);
@@ -35,9 +27,9 @@ export const postAnswer = (answerData) => {
       dispatch({ type: 'POST_ANSWER_ERROR', payload: error.message });
     }
   };
-};
+}
 
-export const postQuiz = (quizData) => {
+export function postQuiz(quizData) {
   return async function (dispatch) {
     try {
       await axios.post('http://localhost:9000/api/quiz/new', quizData);
@@ -47,5 +39,5 @@ export const postQuiz = (quizData) => {
       dispatch({ type: 'POST_QUIZ_ERROR', payload: error.message });
     }
   };
-};
+}
 
