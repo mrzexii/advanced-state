@@ -1,16 +1,20 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import * as actionCreators from '../state/action-creators'
+import React from 'react';
+import { connect } from 'react-redux';
+import * as actionCreators from '../state/action-creators';
 
-export function Form(props) {
+function Form(props) {
+  const onChange = (evt) => {
+    props.inputChange(evt.target.id, evt.target.value);
+  };
 
-  const onChange = evt => {
-
-  }
-
-  const onSubmit = evt => {
-
-  }
+  const onSubmit = (evt) => {
+    evt.preventDefault();
+    props.postQuiz({
+      question_text: props.form.newQuestion,
+      true_answer_text: props.form.newTrueAnswer,
+      false_answer_text: props.form.newFalseAnswer,
+    });
+  };
 
   return (
     <form id="form" onSubmit={onSubmit}>
@@ -20,7 +24,7 @@ export function Form(props) {
       <input maxLength={50} onChange={onChange} id="newFalseAnswer" placeholder="Enter false answer" />
       <button id="submitNewQuizBtn">Submit new quiz</button>
     </form>
-  )
+  );
 }
 
-export default connect(st => st, actionCreators)(Form)
+export default connect((state) => ({ form: state.form }), actionCreators)(Form);
