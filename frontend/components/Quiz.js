@@ -1,9 +1,15 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import * as actionCreators from '../state/action-creators';
+// ... (unchanged code)
 
 function Quiz(props) {
-  const { quiz, selectedAnswer } = props;
+  const { quiz, selectedAnswer, selectAnswer, postAnswer } = props;
+
+  const onAnswerClick = (answerId) => {
+    selectAnswer(answerId);
+  };
+
+  const onSubmitAnswer = () => {
+    postAnswer();
+  };
 
   return (
     <div id="wrapper">
@@ -12,13 +18,17 @@ function Quiz(props) {
           <h2>{quiz.question_text}</h2>
           <div id="quizAnswers">
             {quiz.answers.map((answer) => (
-              <div key={answer.answer_id} className={`answer ${selectedAnswer === answer.answer_id ? 'selected' : ''}`}>
+              <div
+                key={answer.answer_id}
+                className={`answer ${selectedAnswer === answer.answer_id ? 'selected' : ''}`}
+                onClick={() => onAnswerClick(answer.answer_id)}
+              >
                 {answer.answer_text}
-                <button>Select</button>
+                <button>{selectedAnswer === answer.answer_id ? 'SELECTED' : 'Select'}</button>
               </div>
             ))}
           </div>
-          <button id="submitAnswerBtn" disabled={!selectedAnswer}>
+          <button id="submitAnswerBtn" disabled={!selectedAnswer} onClick={onSubmitAnswer}>
             Submit answer
           </button>
         </>
@@ -29,9 +39,4 @@ function Quiz(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  quiz: state.quiz,
-  selectedAnswer: state.selectedAnswer,
-});
-
-export default connect(mapStateToProps, actionCreators)(Quiz);
+export default connect((state) => state, actionCreators)(Quiz);
