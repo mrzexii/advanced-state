@@ -1,4 +1,6 @@
-// ... (unchanged code)
+import React from 'react';
+import { connect } from 'react-redux';
+import * as actionCreators from '../state/action-creators';
 
 function Quiz(props) {
   const { quiz, selectedAnswer, selectAnswer, postAnswer } = props;
