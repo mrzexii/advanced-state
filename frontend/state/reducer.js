@@ -1,70 +1,66 @@
-// reducer.js
 import { combineReducers } from 'redux';
+import * as actionTypes from './action-types';
 
 const initialWheelState = 0;
+function wheel(state = initialWheelState, action) {
+  switch (action.type) {
+    case actionTypes.MOVE_CLOCKWISE:
+      // Handle clockwise movement
+      return state; // Modify this based on your logic
+    case actionTypes.MOVE_COUNTERCLOCKWISE:
+      // Handle counter-clockwise movement
+      return state; // Modify this based on your logic
+    default:
+      return state;
+  }
+}
+
 const initialQuizState = null;
+function quiz(state = initialQuizState, action) {
+  switch (action.type) {
+    case actionTypes.SET_QUIZ_INTO_STATE:
+      return action.quizData;
+    default:
+      return state;
+  }
+}
+
 const initialSelectedAnswerState = null;
+function selectedAnswer(state = initialSelectedAnswerState, action) {
+  switch (action.type) {
+    case actionTypes.SET_SELECTED_ANSWER:
+      return action.answer;
+    default:
+      return state;
+  }
+}
+
 const initialMessageState = '';
+function infoMessage(state = initialMessageState, action) {
+  switch (action.type) {
+    case actionTypes.SET_INFO_MESSAGE:
+      return action.message;
+    default:
+      return state;
+  }
+}
+
 const initialFormState = {
   newQuestion: '',
   newTrueAnswer: '',
   newFalseAnswer: '',
 };
-
-function wheel(state = initialWheelState, action) {
-  switch (action.type) {
-    case 'MOVE_CLOCKWISE':
-      return state; // Replace with your logic
-    case 'MOVE_COUNTERCLOCKWISE':
-      return state; // Replace with your logic
-    default:
-      return state;
-  }
-}
-
-function quiz(state = initialQuizState, action) {
-  switch (action.type) {
-    case 'SET_QUIZ_INTO_STATE':
-      return action.payload; // Replace with your logic
-    default:
-      return state;
-  }
-}
-
-function selectedAnswer(state = initialSelectedAnswerState, action) {
-  switch (action.type) {
-    case 'SET_SELECTED_ANSWER':
-      return action.payload; // Replace with your logic
-    default:
-      return state;
-  }
-}
-
-function infoMessage(state = initialMessageState, action) {
-  switch (action.type) {
-    case 'SET_INFO_MESSAGE':
-      return action.payload; // Replace with your logic
-    default:
-      return state;
-  }
-}
-
 function form(state = initialFormState, action) {
   switch (action.type) {
-    case 'INPUT_CHANGE':
-      return { ...state, [action.payload.field]: action.payload.value }; // Replace with your logic
+    case actionTypes.INPUT_CHANGE:
+      // Handle input change
+      return { ...state, [action.field]: action.value };
+    case actionTypes.RESET_FORM:
+      return initialFormState;
     default:
       return state;
   }
 }
 
-const rootReducer = combineReducers({
-  wheel,
-  quiz,
-  selectedAnswer,
-  infoMessage,
-  form,
-});
-
-export default rootReducer;
+export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, form });
 
