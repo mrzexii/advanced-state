@@ -1,3 +1,4 @@
+// ❗ You don't need to add extra reducers to achieve MVP
 import { combineReducers } from 'redux';
 import * as actionTypes from './action-types';
 
@@ -5,11 +6,9 @@ const initialWheelState = 0;
 function wheel(state = initialWheelState, action) {
   switch (action.type) {
     case actionTypes.MOVE_CLOCKWISE:
-      // Handle clockwise movement
-      return state; // Modify this based on your logic
+      return (state + 1) % 6;
     case actionTypes.MOVE_COUNTERCLOCKWISE:
-      // Handle counter-clockwise movement
-      return state; // Modify this based on your logic
+      return (state - 1 + 6) % 6;
     default:
       return state;
   }
@@ -19,7 +18,7 @@ const initialQuizState = null;
 function quiz(state = initialQuizState, action) {
   switch (action.type) {
     case actionTypes.SET_QUIZ_INTO_STATE:
-      return action.quizData;
+      return action.payload;
     default:
       return state;
   }
@@ -29,7 +28,7 @@ const initialSelectedAnswerState = null;
 function selectedAnswer(state = initialSelectedAnswerState, action) {
   switch (action.type) {
     case actionTypes.SET_SELECTED_ANSWER:
-      return action.answer;
+      return action.payload;
     default:
       return state;
   }
@@ -39,7 +38,7 @@ const initialMessageState = '';
 function infoMessage(state = initialMessageState, action) {
   switch (action.type) {
     case actionTypes.SET_INFO_MESSAGE:
-      return action.message;
+      return action.payload;
     default:
       return state;
   }
@@ -53,14 +52,5 @@ const initialFormState = {
 function form(state = initialFormState, action) {
   switch (action.type) {
     case actionTypes.INPUT_CHANGE:
-      // Handle input change
-      return { ...state, [action.field]: action.value };
-    case actionTypes.RESET_FORM:
-      return initialFormState;
-    default:
-      return state;
-  }
-}
-
-export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, form });
-
+      return { ...state, [action.payload.id]: action.payload.value };
+   
