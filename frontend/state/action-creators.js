@@ -1,5 +1,4 @@
 // ❗ You don't need to add extra action creators to achieve MVP
-export function moveClockwise() { }
 import {
   MOVE_CLOCKWISE,
   MOVE_COUNTERCLOCKWISE,
@@ -21,18 +20,15 @@ export function moveClockwise() {
   return ({ type: MOVE_CLOCKWISE })
 }
 
-export function moveCounterClockwise() { }
 export function moveCounterClockwise() {
   return ({ type: MOVE_COUNTERCLOCKWISE })
 }
 //wheel functionality finished
 
-export function selectAnswer() { }
-export const selectAnswer = (id) => {
+export function selectAnswer(id) {
   return { type: SET_SELECTED_ANSWER, payload: id }
 }
 
-export function setMessage() { }
 export function setMessage(message) {
   return {
     type: SET_INFO_MESSAGE, payload: message
@@ -41,7 +37,6 @@ export function setMessage(message) {
 
 export function setQuiz() { }
 
-export function inputChange() { }
 export const inputChange = (data) => {
   return {
     type: INPUT_CHANGE, payload: data
@@ -49,7 +44,6 @@ export const inputChange = (data) => {
 }
 
 
-export function resetForm() { }
 export function resetForm() {
   return {
     type: RESET_FORM
@@ -57,11 +51,6 @@ export function resetForm() {
 }
 
 // ❗ Async action creators
-export function fetchQuiz() {
-  return function (dispatch) {
-    // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
-    // On successful GET:
-    // - Dispatch an action to send the obtained quiz to its state
 export const fetchQuiz = () => dispatch => {
   dispatch(setIsFetching(false));
   // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
@@ -80,23 +69,12 @@ const setIsFetching = (isFetching) => {
     type: SET_IS_FETCHING, payload: isFetching
   }
 }
-export function postAnswer() {
-  return function (dispatch) {
-    // On successful POST:
-    // - Dispatch an action to reset the selected answer state
-    // - Dispatch an action to set the server message to state
-    // - Dispatch the fetching of the next quiz
 
 const setError = (error) => {
   return {
     type: SET_ERROR, payload: error
   }
 }
-export function postQuiz() {
-  return function (dispatch) {
-    // On successful POST:
-    // - Dispatch the correct message to the the appropriate state
-    // - Dispatch the resetting of the form
 
 const setQuizIntoState = (data) => {
   return {
@@ -137,3 +115,4 @@ export const postQuiz = (question, rightAnswer, wrongAnswer, message) => dispatc
     dispatch(setError(err))
   })
 }
+// ❗ On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
