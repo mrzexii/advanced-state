@@ -1,7 +1,6 @@
 // ❗ You don't need to add extra reducers to achieve MVP
 import { combineReducers } from 'redux'
 
-const initialWheelState = 0
 import {
   MOVE_CLOCKWISE,
   MOVE_COUNTERCLOCKWISE,
@@ -48,7 +47,6 @@ const initialWheelState = {
   activeWheel: 0
 }
 function wheel(state = initialWheelState, action) {
-  return state
   let currentWheel = state.activeWheel;
   switch (action.type) {
     case MOVE_CLOCKWISE:
@@ -107,7 +105,6 @@ function wheel(state = initialWheelState, action) {
 }
 //wheel functionality done
 
-const initialQuizState = null
 const initialQuizState = {
   quiz: "",
   isFetching: false,
@@ -116,7 +113,6 @@ const initialQuizState = {
   // infoMessage: ""
 }
 function quiz(state = initialQuizState, action) {
-  return state
   switch (action.type) {
     case SET_IS_FETCHING:
       return {
@@ -158,6 +154,7 @@ function quiz(state = initialQuizState, action) {
         isFetching: true,
         error: "",
         buttonState: false,
+        infoMessage: ""
       }
     case RESET_SELECTED_STATE:
       return {
@@ -180,16 +177,10 @@ function quiz(state = initialQuizState, action) {
   }
 }
 
-const initialSelectedAnswerState = null
-function selectedAnswer(state = initialSelectedAnswerState, action) {
-  return state
 const initialMessageState = {
   infoMessage: ""
 }
-
-const initialMessageState = ''
 function infoMessage(state = initialMessageState, action) {
-  return state
   switch(action.type){
     case SET_INFO_MESSAGE:
       return {
@@ -203,11 +194,11 @@ function infoMessage(state = initialMessageState, action) {
 }
 
 const initialFormState = {
-@@ -27,7 +198,18 @@ const initialFormState = {
+  newQuestion: '',
+  newTrueAnswer: '',
   newFalseAnswer: '',
 }
 function form(state = initialFormState, action) {
-  return state
   const evt = action.payload;
   switch (action.type) {
     case INPUT_CHANGE:
@@ -222,5 +213,4 @@ function form(state = initialFormState, action) {
   }
 }
 
-export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, form })
 export default combineReducers({ wheel, quiz, form, infoMessage })
