@@ -1,139 +1,139 @@
-import axios from 'axios';
-import * as actionTypes from './action-types';
+// ❗ You don't need to add extra action creators to achieve MVP
+export function moveClockwise() { }
+import {
+  MOVE_CLOCKWISE,
+  MOVE_COUNTERCLOCKWISE,
+  SET_QUIZ_INTO_STATE,
+  SET_SELECTED_ANSWER,
+  SET_INFO_MESSAGE,
+  INPUT_CHANGE,
+  RESET_FORM,
+  SET_IS_FETCHING,
+  SET_ERROR,
+  RESET_SELECTED_STATE,
+  CLEAR_INFO_MESSAGE
+}
+  from './action-types'
+import axios from 'axios'
 
+//wheel functionality finished
 export function moveClockwise() {
-  return {
-    type: actionTypes.MOVE_CLOCKWISE,
-  };
+  return ({ type: MOVE_CLOCKWISE })
 }
 
+export function moveCounterClockwise() { }
 export function moveCounterClockwise() {
-  return {
-    type: actionTypes.MOVE_COUNTERCLOCKWISE,
-  };
+  return ({ type: MOVE_COUNTERCLOCKWISE })
+}
+//wheel functionality finished
+
+export function selectAnswer() { }
+export const selectAnswer = (id) => {
+  return { type: SET_SELECTED_ANSWER, payload: id }
 }
 
-export function selectAnswer(answerId) {
-  return {
-    type: actionTypes.SET_SELECTED_ANSWER,
-    payload: answerId,
-  };
-}
-
+export function setMessage() { }
 export function setMessage(message) {
   return {
-    type: actionTypes.SET_INFO_MESSAGE,
-    payload: message,
-  };
+    type: SET_INFO_MESSAGE, payload: message
+  }
 }
 
-export function setQuiz(quizData) {
+export function setQuiz() { }
+
+export function inputChange() { }
+export const inputChange = (data) => {
   return {
-    type: actionTypes.SET_QUIZ_INTO_STATE,
-    payload: quizData,
-  };
+    type: INPUT_CHANGE, payload: data
+  }
 }
 
-export function inputChange(id, value) {
-  return {
-    type: actionTypes.INPUT_CHANGE,
-    payload: { id, value },
-  };
-}
 
+export function resetForm() { }
 export function resetForm() {
   return {
-    type: actionTypes.RESET_FORM,
-  };
+    type: RESET_FORM
+  }
 }
 
-// Async action creators
+// ❗ Async action creators
 export function fetchQuiz() {
   return function (dispatch) {
     // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
-    dispatch(setQuiz(null));
-
-    // Simulate a slow API request
-    axios.get('http://localhost:9000/api/quiz/next')
-      .then(response => {
-        // On successful GET:
-        // - Dispatch an action to send the obtained quiz to its state
-        dispatch(setQuiz(response.data));
-      })
-      .catch(error => {
-        console.error('Error fetching quiz:', error);
-        // Handle error (e.g., log statements, breakpoints, and appropriate error message)
-      });
-  };
+    // On successful GET:
+    // - Dispatch an action to send the obtained quiz to its state
+export const fetchQuiz = () => dispatch => {
+  dispatch(setIsFetching(false));
+  // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
+  // On successful GET:
+  // - Dispatch an action to send the obtained quiz to its state
+  axios.get(`http://localhost:9000/api/quiz/next`)
+    .then(res => {
+      dispatch(setQuizIntoState(res.data))
+    }, (error) => {
+      dispatch(setError(error.message))
+    })
 }
 
+const setIsFetching = (isFetching) => {
+  return {
+    type: SET_IS_FETCHING, payload: isFetching
+  }
+}
 export function postAnswer() {
-  return function (dispatch, getState) {
-    const state = getState();
-    const { selectedAnswer } = state;
+  return function (dispatch) {
+    // On successful POST:
+    // - Dispatch an action to reset the selected answer state
+    // - Dispatch an action to set the server message to state
+    // - Dispatch the fetching of the next quiz
 
-    if (selectedAnswer) {
-      // On successful POST:
-      // - Dispatch an action to reset the selected answer state
-      dispatch(selectAnswer(null));
+const setError = (error) => {
+  return {
+    type: SET_ERROR, payload: error
+  }
+}
+export function postQuiz() {
+  return function (dispatch) {
+    // On successful POST:
+    // - Dispatch the correct message to the the appropriate state
+    // - Dispatch the resetting of the form
 
-      // - Dispatch an action to set the server message to state
-      dispatch(setMessage('Answer submitted successfully'));
-
-      // - Dispatch the fetching of the next quiz
-      dispatch(fetchQuiz());
-
-      // Simulate a slow API request for submitting answer
-      axios.post('http://localhost:9000/api/quiz/answer', {
-        quiz_id: state.quiz.quiz_id,
-        answer_id: selectedAnswer,
-      })
-        .then(response => {
-          // Handle the response if necessary
-        })
-        .catch(error => {
-          console.error('Error submitting answer:', error);
-          // Handle error (e.g., log statements, breakpoints, and appropriate error message)
-        });
-    } else {
-      // Handle error (e.g., no selected answer)
-      console.error('Error: No selected answer');
-    }
-  };
+const setQuizIntoState = (data) => {
+  return {
+    type: SET_QUIZ_INTO_STATE, payload: data
+  }
 }
 
-export function postQuiz() {
-  return function (dispatch, getState) {
-    const state = getState();
-    const { newQuestion, newTrueAnswer, newFalseAnswer } = state.form;
+const resetSelectedState = () => {
+  return {
+    type: RESET_SELECTED_STATE
+  }
+}
 
-    if (newQuestion.trim() && newTrueAnswer.trim() && newFalseAnswer.trim()) {
-      // On successful POST:
-      // - Dispatch the correct message to the appropriate state
-      dispatch(setMessage('New quiz submitted successfully'));
+export const postAnswer = (data) => dispatch => {
+  // On successful POST:
+  // - Dispatch an action to reset the selected answer state
+  // - Dispatch an action to set the server message to state
+  // - Dispatch the fetching of the next quiz 
+  const answer_id = data.answers.filter((elem) => elem.selectValue === "SELECTED")[0].answer_id
+  axios.post(`http://localhost:9000/api/quiz/answer`, { "quiz_id": data.quiz_id, "answer_id": answer_id }).then(res => {
+    dispatch(setMessage(res.data.message))
+    dispatch(resetSelectedState());
+    dispatch(fetchQuiz())
+  })
+}
+export const postQuiz = (question, rightAnswer, wrongAnswer, message) => dispatch => {
 
-      // - Dispatch the resetting of the form
-      dispatch(resetForm());
-
-      // - Dispatch the fetching of the next quiz
-      dispatch(fetchQuiz());
-
-      // Simulate a slow API request for submitting new quiz
-      axios.post('http://localhost:9000/api/quiz/new', {
-        question_text: newQuestion,
-        true_answer_text: newTrueAnswer,
-        false_answer_text: newFalseAnswer,
-      })
-        .then(response => {
-          // Handle the response if necessary
-        })
-        .catch(error => {
-          console.error('Error submitting new quiz:', error);
-          // Handle error (e.g., log statements, breakpoints, and appropriate error message)
-        });
-    } else {
-      // Handle error (e.g., form validation)
-      console.error('Error: Form validation failed');
-    }
-  };
+  // On successful POST:
+  // - Dispatch the correct message to the the appropriate state
+  // - Dispatch the resetting of the form
+  axios.post(`http://localhost:9000/api/quiz/new`, {
+    "question_text": question, "true_answer_text": rightAnswer,
+    "false_answer_text": wrongAnswer
+  }).then(res => {
+    console.log(res)
+    dispatch(setMessage(message))
+  }).catch(err => {
+    dispatch(setError(err))
+  })
 }
